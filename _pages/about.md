@@ -2,7 +2,7 @@
 layout: about
 title: about
 permalink: /
-subtitle: PhD Student at <a href='https://reglab.stanford.edu/'>Massachussets Institue of Technology</a>
+subtitle: PhD Student at <a href='https://reglab.stanford.edu/'>Massachusetts Institute of Technology</a>
  # <a href='https://reglab.stanford.edu/'>Stanford RegLab</a> | <a href='https://cais.usc.edu/'>USC CAIS</a>
 
 profile:

@@ -4,7 +4,7 @@
       <div class="row">
         <div class="col-sm-2 {% if entry.preview %}preview{% else %}abbr{% endif %}">
         {%- if entry.preview -%}
-          <img class="img-fluid rounded" width="300" height="300" src="/al-folio/assets/img/publication_preview/{{ entry.preview }}">
+          <img class="img-fluid rounded" width="300" height="300" src="/assets/img/publication_preview/{{ entry.preview }}">
         {%- elsif entry.abbr -%}
           {%- if site.data.venues[entry.abbr] -%}
             {%- assign venue_style = nil -%}

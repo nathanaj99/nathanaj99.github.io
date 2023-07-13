@@ -1,0 +1,37 @@
+<svg width="400" height="400" viewBox="0 0 400 400" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_0_3)">
+<circle cx="203" cy="66" r="30" fill="#D9D9D9"/>
+<circle cx="66" cy="309" r="30" fill="#59DE7E"/>
+<circle cx="341" cy="309" r="30" fill="#59DE7E"/>
+<circle cx="252" cy="310" r="30" fill="#EEE742"/>
+<circle cx="154" cy="310" r="30" fill="#42D9EE"/>
+<circle cx="296" cy="188" r="30" fill="#D9D9D9"/>
+<circle cx="110" cy="188" r="30" fill="#D9D9D9"/>
+<line x1="204.5" y1="96" x2="204.5" y2="127" stroke="#9E9E9E" stroke-width="5"/>
+<line x1="111.5" y1="218" x2="111.5" y2="249" stroke="#9E9E9E" stroke-width="5"/>
+<line x1="297.5" y1="218" x2="297.5" y2="249" stroke="#9E9E9E" stroke-width="5"/>
+<line x1="111.5" y1="127" x2="111.5" y2="158" stroke="#9E9E9E" stroke-width="5"/>
+<line x1="67.5" y1="249" x2="67.5" y2="280" stroke="#9E9E9E" stroke-width="5"/>
+<line x1="156.5" y1="249" x2="156.5" y2="280" stroke="#9E9E9E" stroke-width="5"/>
+<line x1="251.5" y1="249" x2="251.5" y2="280" stroke="#9E9E9E" stroke-width="5"/>
+<line x1="340.5" y1="249" x2="340.5" y2="280" stroke="#9E9E9E" stroke-width="5"/>
+<line x1="297.5" y1="127" x2="297.5" y2="158" stroke="#9E9E9E" stroke-width="5"/>
+<line x1="296" y1="129.5" x2="110" y2="129.5" stroke="#9E9E9E" stroke-width="5"/>
+<line x1="154" y1="251.5" x2="65" y2="251.5" stroke="#9E9E9E" stroke-width="5"/>
+<line x1="339" y1="251.5" x2="250" y2="251.5" stroke="#9E9E9E" stroke-width="5"/>
+<line x1="251.5" y1="340" x2="251.5" y2="371" stroke="#9E9E9E" stroke-width="5"/>
+<line x1="205.5" y1="371" x2="205.5" y2="402" stroke="#9E9E9E" stroke-width="5"/>
+<line x1="294.5" y1="371" x2="294.5" y2="402" stroke="#9E9E9E" stroke-width="5"/>
+<line x1="293" y1="373.5" x2="204" y2="373.5" stroke="#9E9E9E" stroke-width="5"/>
+<line x1="67.5" y1="339" x2="67.5" y2="370" stroke="#9E9E9E" stroke-width="5"/>
+<line x1="21.5" y1="370" x2="21.5" y2="401" stroke="#9E9E9E" stroke-width="5"/>
+<line x1="110.5" y1="370" x2="110.5" y2="401" stroke="#9E9E9E" stroke-width="5"/>
+<line x1="109" y1="372.5" x2="20" y2="372.5" stroke="#9E9E9E" stroke-width="5"/>
+<line x1="19" y1="355" x2="381" y2="355" stroke="#FF0202" stroke-width="2" stroke-dasharray="2 2"/>
+</g>
+<defs>
+<clipPath id="clip0_0_3">
+<rect width="400" height="400" fill="white"/>
+</clipPath>
+</defs>
+</svg>

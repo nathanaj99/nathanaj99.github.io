@@ -2,7 +2,7 @@
 layout: about
 title: about
 permalink: /
-subtitle: PhD Student at <a href='https://www.csail.mit.edu/'>Massachusetts Institute of Technology</a>
+subtitle: PhD Student at <a href='https://lids.mit.edu/'>Massachusetts Institute of Technology</a>
  # <a href='https://reglab.stanford.edu/'>Stanford RegLab</a> | <a href='https://cais.usc.edu/'>USC CAIS</a>
 
 profile:
@@ -21,7 +21,7 @@ social: true  # includes social icons at the bottom of the page
 ---
 Hello! My name is Nathan and I'm a first year PhD student in Computer Science at MIT, where I'm fortunate to be advised by [Manish Raghavan][manishraghavan] and [Ashia Wilson][ashiawilson]. 
 
-I’m broadly interested in the societal impacts of AI — particularly questions around equity and technology governance. This often entails using tools at the intersection of machine learning, operations research, and behavioral economics. My work is supported by the Herbert E. Grier (1933) and Dorothy J. Grier Fellowship.
+I’m broadly interested in the societal impacts of AI — particularly questions around equity and governance. This often entails using tools at the intersection of machine learning, behavioral economics, and operations research. My work is supported by the Herbert E. Grier (1933) and Dorothy J. Grier Fellowship.
 
 Previously, I was a research fellow at the [Regulation, Evaluation, and Governance Lab (RegLab)][reglab] at Stanford University advised by [Dan Ho][danho], and prior to that I was a researcher at the [USC Center for AI in Society][usc-cais] under [Phebe Vayanos][phebevayanos]. I received my Master's degree in Data Science and my Bachelor's degree in Applied Mathematics from the University of Southern California in 2021.
 

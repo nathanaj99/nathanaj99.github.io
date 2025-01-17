@@ -2,11 +2,11 @@
 # Site settings
 # -----------------------------------------------------------------------------
 
-title: blank # the website title (if blank, full name will be used instead)
+title: Nathanael Jo # the website title (if blank, full name will be used instead)
 first_name: Nathanael
 # middle_name: R.
 last_name: Jo
-email: nathanajo@mit.edu
+email: nathanjo@mit.edu
 description: > # the ">" symbol means to ignore newlines until "footer_text:"
   A personal website for Nathanael Jo.
 # footer_text: >
@@ -63,9 +63,9 @@ max_width: 800px
 # Open Graph & Schema.org
 # -----------------------------------------------------------------------------
 # Display links to the page with a preview object on social media.
-serve_og_meta: false # Include Open Graph meta tags in the HTML head
-serve_schema_org: false # Include Schema.org in the HTML head
-og_image: # The site-wide (default for all links) Open Graph preview image
+serve_og_meta: true # Include Open Graph meta tags in the HTML head
+serve_schema_org: true # Include Schema.org in the HTML head
+og_image: assets/img/nathanjo.jpg # The site-wide (default for all links) Open Graph preview image
 
 # -----------------------------------------------------------------------------
 # Social integration

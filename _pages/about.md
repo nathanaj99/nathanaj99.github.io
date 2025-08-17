@@ -19,11 +19,11 @@ profile:
 # selected_papers: true # includes a list of papers marked as "selected={true}"
 social: true  # includes social icons at the bottom of the page
 ---
-Hello! My name is Nathan and I'm a first year PhD student in Computer Science at MIT, where I'm fortunate to be advised by [Manish Raghavan][manishraghavan] and [Ashia Wilson][ashiawilson]. 
+Hi! My name is Nathan and I'm a PhD student in Computer Science at MIT, where I'm fortunate to be advised by [Manish Raghavan][manishraghavan] and [Ashia Wilson][ashiawilson]. 
 
-I’m broadly interested in the societal impacts of AI — particularly questions around equity and governance. This often entails using tools at the intersection of machine learning, behavioral economics, and operations research. My work is supported by the Herbert E. Grier (1933) and Dorothy J. Grier Fellowship.
+I’m broadly interested in the societal impacts of AI. These days, my work focuses on developing models of how people interact with AI systems. My goal is to better understand the mechanisms behind those interactions so that we can design, deploy, and regulate AI responsibly. This often entails using tools at the intersection of machine learning and economics. But I also work on adjacent problems – anything from evals to alignment!
 
-Previously, I was a research fellow at the [Regulation, Evaluation, and Governance Lab (RegLab)][reglab] at Stanford University advised by [Dan Ho][danho], and prior to that I was a researcher at the [USC Center for AI in Society][usc-cais] under [Phebe Vayanos][phebevayanos]. I received my Master's degree in Data Science and my Bachelor's degree in Applied Mathematics from the University of Southern California in 2021.
+Previously, I was a research fellow at the [Regulation, Evaluation, and Governance Lab (RegLab)][reglab] at Stanford University advised by [Dan Ho][danho], and prior to that I was a researcher at the [USC Center for AI in Society][usc-cais] under [Phebe Vayanos][phebevayanos]. My work involved conducting empirical research for AI governance and improving fairness in decision-making systems. I received my Master's degree in Data Science and my Bachelor's degree in Applied Mathematics from the University of Southern California in 2021.
 
 
 [reglab]: https://reglab.stanford.edu/

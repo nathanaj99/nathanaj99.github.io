@@ -7,7 +7,7 @@ import sitemap from '@astrojs/sitemap';
 // project repo, set `base: '/repo-name'` here and nothing else has to change:
 // every internal link in the site is built with the `url()` helper in src/lib/url.ts.
 export default defineConfig({
-  site: 'https://nathanaj99.github.io',
+  site: 'https://nathanaeljo.com',
   base: '/',
   trailingSlash: 'ignore',
   prefetch: {

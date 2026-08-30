@@ -1,0 +1,178 @@
+---
+import { site } from '../data/site';
+import { url, isCurrent } from '../lib/url';
+
+interface Props {
+  /** Homepage: hold the hairline back until the page is scrolled. */
+  transparent?: boolean;
+}
+
+const { transparent = false } = Astro.props;
+const pathname = Astro.url.pathname;
+---
+
+<header class="head" data-head data-transparent={transparent ? '' : undefined}>
+  <div class="head__inner frame">
+    <a class="mark" href={url('/')} aria-label={`${site.name} — home`}>
+      <span aria-hidden="true">Nathanael J</span>
+      <span class="mark__disc" aria-hidden="true"></span>
+    </a>
+
+    <nav class="nav" aria-label="Primary">
+      <ul class="nav__list">
+        {
+          site.nav.map((item) => {
+            const current = !item.external && isCurrent(pathname, item.href);
+            return (
+              <li>
+                <a
+                  class="nav__link label"
+                  href={url(item.href)}
+                  aria-current={current ? 'page' : undefined}
+                  target={item.external ? '_blank' : undefined}
+                  rel={item.external ? 'noopener' : undefined}
+                >
+                  <span class="nav__dot" aria-hidden="true"></span>
+                  {item.label}
+                </a>
+              </li>
+            );
+          })
+        }
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<script>
+  // One state change, one class: the header's hairline appears once the page
+  // has moved. No scroll effects beyond that.
+  const head = document.querySelector('[data-head]');
+  if (head) {
+    let scrolled = false;
+    const update = () => {
+      const next = window.scrollY > 12;
+      if (next !== scrolled) {
+        scrolled = next;
+        head.toggleAttribute('data-scrolled', next);
+      }
+    };
+    update();
+    window.addEventListener('scroll', update, { passive: true });
+  }
+</script>
+
+<style>
+  .head {
+    position: sticky;
+    top: 0;
+    z-index: 40;
+    background: var(--cream);
+    border-bottom: 1px solid var(--rule);
+    transition: border-color 260ms ease;
+  }
+
+  /* Homepage: no rule until the visitor scrolls. */
+  .head[data-transparent]:not([data-scrolled]) {
+    border-bottom-color: transparent;
+  }
+
+  .head__inner {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--s-3);
+    min-height: var(--header-h);
+    padding-block: 1.4rem 1.15rem;
+  }
+
+  .mark {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.06em;
+    font-size: 1.0625rem;
+    font-weight: 500;
+    letter-spacing: -0.015em;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+
+  .mark__disc {
+    width: 0.52em;
+    height: 0.52em;
+    border-radius: 50%;
+    background: var(--persimmon);
+    transition: transform 320ms cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+
+  .mark:hover .mark__disc {
+    transform: translateY(-0.12em) scale(1.12);
+  }
+
+  .nav__list {
+    display: flex;
+    align-items: baseline;
+    gap: clamp(1rem, 2.2vw, 2.25rem);
+    margin: 0;
+  }
+
+  .nav__link {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.5em;
+    color: var(--ink);
+    text-decoration: none;
+    transition: color 180ms ease;
+  }
+
+  /* A disc marks the current page. It keeps its space when hidden, so hovering
+     never nudges the labels. */
+  .nav__dot {
+    width: 0.45em;
+    height: 0.45em;
+    border-radius: 50%;
+    background: var(--persimmon);
+    opacity: 0;
+    transform: scale(0.4);
+    transition:
+      opacity 200ms ease,
+      transform 300ms cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+
+  .nav__link:hover {
+    color: var(--persimmon-ink);
+  }
+
+  .nav__link:hover .nav__dot,
+  .nav__link:focus-visible .nav__dot {
+    opacity: 0.45;
+    transform: scale(1);
+  }
+
+  .nav__link[aria-current='page'] .nav__dot {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  @media (max-width: 46rem) {
+    .head__inner {
+      display: grid;
+      grid-template-columns: 1fr;
+      row-gap: 0.7rem;
+      padding-block: 0.9rem 0.65rem;
+    }
+
+    .nav__list {
+      justify-content: space-between;
+      gap: 0.75rem;
+      padding-top: 0.55rem;
+      border-top: 1px solid var(--rule);
+    }
+
+    .nav__link {
+      font-size: 0.6875rem;
+      letter-spacing: 0.1em;
+      gap: 0.38em;
+    }
+  }
+</style>

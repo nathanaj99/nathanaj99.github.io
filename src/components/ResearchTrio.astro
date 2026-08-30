@@ -1,0 +1,261 @@
+---
+/**
+ * Three circles on a wire, one per research strand.
+ *
+ * Used on the research overview as a map into the strand sections below.
+ * At rest the wire is a straight line and the circles sit evenly on it. As the
+ * pointer crosses the page each circle drifts a little toward it, at its own
+ * rate, and the wire is redrawn through the moved centres, so the piece reads
+ * as one strung object rather than three separate dots.
+ *
+ * The drawing is decorative and hidden from assistive tech; the links are the
+ * labels underneath, which are ordinary HTML so they stay legible and wrap
+ * properly at any width. The same three strands are written out in full
+ * further down the page, so nothing here is the only way in.
+ */
+import { getCollection } from 'astro:content';
+import { url } from '../lib/url';
+
+const strands = (await getCollection('research')).sort((a, b) => a.data.order - b.data.order);
+
+// viewBox units. Equal circles, evenly spaced, resting on one line. The
+// centres sit at 1/6, 1/2 and 5/6 of the width so the label columns below
+// line up with them exactly. Kept modest so the overview map stays short.
+const R = 28;
+const CY = 40;
+const CX = [100, 300, 500];
+---
+
+<figure class="trio" data-trio>
+  <svg class="trio__svg" viewBox="0 0 600 80" aria-hidden="true" focusable="false">
+    <defs>
+      <linearGradient id="trio-wire-fade" x1="0" x2="1" y1="0" y2="0">
+        <stop offset="0" stop-color="var(--ink)" stop-opacity="0"></stop>
+        <stop offset="0.16" stop-color="var(--ink)" stop-opacity="0.42"></stop>
+        <stop offset="0.84" stop-color="var(--ink)" stop-opacity="0.42"></stop>
+        <stop offset="1" stop-color="var(--ink)" stop-opacity="0"></stop>
+      </linearGradient>
+    </defs>
+
+    <path class="trio__wire" data-wire d={`M 0 ${CY} L 600 ${CY}`}></path>
+
+    {
+      strands.map((strand, i) => (
+        <g class="node" data-node data-index={i}>
+          <circle class="node__halo" cx={CX[i]} cy={CY} r={R + 8} />
+          <circle
+            class={`node__disc node__disc--${strand.data.accent}`}
+            cx={CX[i]}
+            cy={CY}
+            r={R}
+          />
+        </g>
+      ))
+    }
+  </svg>
+
+  <ul class="trio__labels">
+    {
+      strands.map((strand, i) => (
+        <li>
+          <a class="trio__link label" href={url(`/research#${strand.id}`)} data-strand={i}>
+            {strand.data.title}
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+</figure>
+
+<script>
+  import { subscribe, spring, step, motionAllowed, proximity } from '../scripts/motion';
+
+  const root = document.querySelector<HTMLElement>('[data-trio]');
+  const wire = root?.querySelector<SVGPathElement>('[data-wire]');
+
+  if (root && wire && motionAllowed()) {
+    // Far-field drift is welcome; near-field drift is capped so the circles
+    // do not leap when the pointer sits on top of them.
+    const MAX = 5.5;
+    const RADIUS = 520;
+    const NEAR_CAP = 0.55;
+    const CY = 40;
+
+    const nodes = [...root.querySelectorAll<SVGGElement>('[data-node]')].map((el, i) => ({
+      el,
+      cx: [100, 300, 500][i],
+      x: spring(),
+      y: spring(),
+      // Each circle answers at its own rate, so they never move as one block.
+      stiffness: [0.028, 0.034, 0.03][i] ?? 0.03,
+    }));
+
+    // A wire through the centres: cubic segments with horizontal handles, so it
+    // passes exactly through each circle and curves smoothly between them.
+    const draw = (points: { x: number; y: number }[]) => {
+      let d = `M ${points[0].x.toFixed(1)} ${points[0].y.toFixed(1)}`;
+      for (let i = 1; i < points.length; i++) {
+        const a = points[i - 1];
+        const b = points[i];
+        const k = (b.x - a.x) / 2;
+        d += ` C ${(a.x + k).toFixed(1)} ${a.y.toFixed(1)} ${(b.x - k).toFixed(1)} ${b.y.toFixed(1)} ${b.x.toFixed(1)} ${b.y.toFixed(1)}`;
+      }
+      return d;
+    };
+
+    let frames = 0;
+    const boxes = nodes.map((node) => node.el.getBoundingClientRect());
+
+    subscribe((pointer, dtScale) => {
+      if (frames++ % 30 === 0) {
+        nodes.forEach((node, i) => (boxes[i] = node.el.getBoundingClientRect()));
+      }
+
+      let moving = false;
+      for (const [i, node] of nodes.entries()) {
+        if (pointer.seen) {
+          const near = proximity(boxes[i], pointer, RADIUS);
+          // Recover the unit direction, then re-apply a capped falloff so
+          // sitting on a circle is no stronger than hovering near it.
+          const scale = near.falloff || 1;
+          const strength = Math.min(near.falloff, NEAR_CAP);
+          node.x.target = (near.x / scale) * MAX * strength;
+          node.y.target = (near.y / scale) * MAX * strength;
+        } else {
+          node.x.target = 0;
+          node.y.target = 0;
+        }
+
+        const movingX = step(node.x, dtScale, node.stiffness, 0.92);
+        const movingY = step(node.y, dtScale, node.stiffness, 0.92);
+        if (movingX || movingY) moving = true;
+
+        node.el.setAttribute(
+          'transform',
+          `translate(${node.x.value.toFixed(2)} ${node.y.value.toFixed(2)})`,
+        );
+      }
+
+      wire.setAttribute(
+        'd',
+        draw([
+          { x: 0, y: CY },
+          ...nodes.map((node) => ({ x: node.cx + node.x.value, y: CY + node.y.value })),
+          { x: 600, y: CY },
+        ]),
+      );
+
+      return moving;
+    });
+  }
+</script>
+
+<style>
+  .trio {
+    margin: 0;
+    width: 100%;
+    max-width: 28rem;
+  }
+
+  .trio__svg {
+    width: 100%;
+    height: auto;
+    overflow: visible;
+  }
+
+  .trio__wire {
+    fill: none;
+    stroke: url(#trio-wire-fade);
+    stroke-width: 1.2;
+  }
+
+  .node__disc {
+    transform-box: fill-box;
+    transform-origin: center;
+    transition: transform 420ms cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+
+  .node__disc--persimmon {
+    fill: var(--persimmon);
+  }
+  .node__disc--gold {
+    fill: var(--gold);
+  }
+  .node__disc--cobalt {
+    fill: var(--cobalt);
+  }
+
+  .node__halo {
+    fill: none;
+    stroke: var(--ink);
+    stroke-width: 1;
+    opacity: 0;
+    transform-box: fill-box;
+    transform-origin: center;
+    transform: scale(0.9);
+    transition:
+      opacity 320ms ease,
+      transform 420ms cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+
+  /* Label columns share the circles' spacing, so each sits under its own. */
+  .trio__labels {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.4rem;
+    margin-top: 0.55rem;
+    text-align: center;
+  }
+
+  .trio__labels li {
+    position: relative;
+    display: flex;
+    justify-content: center;
+  }
+
+  .trio__link {
+    display: inline-block;
+    max-width: 14ch;
+    color: var(--ink-60);
+    text-decoration: none;
+    transition: color 200ms ease;
+  }
+
+  .trio__link:hover {
+    color: var(--ink);
+  }
+
+  /* The circle above the label belongs to the same link, so pointing at it
+     works as well as pointing at the words. */
+  .trio__link::before {
+    content: '';
+    position: absolute;
+    left: 50%;
+    bottom: 100%;
+    width: 62%;
+    aspect-ratio: 1;
+    transform: translateX(-50%);
+    border-radius: 50%;
+  }
+
+  /* Hovering or focusing a label lifts its circle, and the other way round:
+     the circle is inside the same hit area. */
+  .trio:has([data-strand='0']:hover) [data-index='0'] .node__disc,
+  .trio:has([data-strand='0']:focus-visible) [data-index='0'] .node__disc,
+  .trio:has([data-strand='1']:hover) [data-index='1'] .node__disc,
+  .trio:has([data-strand='1']:focus-visible) [data-index='1'] .node__disc,
+  .trio:has([data-strand='2']:hover) [data-index='2'] .node__disc,
+  .trio:has([data-strand='2']:focus-visible) [data-index='2'] .node__disc {
+    transform: scale(1.06);
+  }
+
+  .trio:has([data-strand='0']:hover) [data-index='0'] .node__halo,
+  .trio:has([data-strand='0']:focus-visible) [data-index='0'] .node__halo,
+  .trio:has([data-strand='1']:hover) [data-index='1'] .node__halo,
+  .trio:has([data-strand='1']:focus-visible) [data-index='1'] .node__halo,
+  .trio:has([data-strand='2']:hover) [data-index='2'] .node__halo,
+  .trio:has([data-strand='2']:focus-visible) [data-index='2'] .node__halo {
+    opacity: 0.45;
+    transform: scale(1);
+  }
+</style>

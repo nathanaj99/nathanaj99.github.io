@@ -1,0 +1,125 @@
+---
+/** A single line of the homepage's selected-work list: year, title, venue. */
+import type { Publication } from '../lib/publications';
+import { primaryHref, TYPE_LABEL } from '../lib/publications';
+
+interface Props {
+  entry: Publication;
+}
+
+const { entry } = Astro.props;
+const data = entry.data;
+const href = primaryHref(data);
+const meta = data.venueShort ?? data.venue ?? data.status ?? TYPE_LABEL[data.type];
+---
+
+<li class="work">
+  <a class="work__link" href={href} target="_blank" rel="noopener">
+    <span class="work__year label nums">{data.year}</span>
+    <span class="work__title">{data.title}</span>
+    <span class="work__meta label">{meta}</span>
+    <span class="work__arrow" aria-hidden="true">
+      <svg viewBox="0 0 24 24" width="20" height="20" fill="none" aria-hidden="true">
+        <path d="M4 12h15M13 6l6 6-6 6" stroke="currentColor" stroke-width="1.6"></path>
+      </svg>
+    </span>
+  </a>
+</li>
+
+<style>
+  .work {
+    border-top: 1px solid var(--rule);
+  }
+
+  .work:last-child {
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .work__link {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    column-gap: var(--gutter);
+    align-items: baseline;
+    padding-block: clamp(1.15rem, 2vw, 1.7rem);
+    text-decoration: none;
+    transition: color 220ms ease;
+  }
+
+  .work__year {
+    grid-column: 1 / span 2;
+    color: var(--ink-45);
+    transition: color 220ms ease;
+  }
+
+  .work__title {
+    grid-column: 3 / span 6;
+    font-size: var(--step-2);
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    line-height: 1.14;
+    max-width: 32ch;
+  }
+
+  .work__meta {
+    grid-column: 9 / span 3;
+    color: var(--ink-60);
+  }
+
+  .work__arrow {
+    grid-column: 12;
+    justify-self: end;
+    align-self: center;
+    color: var(--ink-45);
+    opacity: 0.5;
+    transition:
+      transform 420ms cubic-bezier(0.2, 0.7, 0.2, 1),
+      opacity 260ms ease,
+      color 260ms ease;
+  }
+
+  .work__link:hover,
+  .work__link:focus-visible {
+    color: var(--persimmon-ink);
+  }
+
+  .work__link:hover .work__year,
+  .work__link:focus-visible .work__year {
+    color: var(--persimmon-ink);
+  }
+
+  .work__link:hover .work__arrow,
+  .work__link:focus-visible .work__arrow {
+    color: var(--persimmon);
+    opacity: 1;
+    transform: translateX(0.35rem);
+  }
+
+  @media (max-width: 60rem) {
+    .work__link {
+      grid-template-columns: 1fr auto;
+      row-gap: 0.5rem;
+    }
+
+    .work__year {
+      grid-column: 1;
+      grid-row: 1;
+    }
+
+    .work__meta {
+      grid-column: 1;
+      grid-row: 3;
+    }
+
+    .work__title {
+      grid-column: 1 / -1;
+      grid-row: 2;
+      max-width: none;
+    }
+
+    .work__arrow {
+      grid-column: 2;
+      grid-row: 1;
+      align-self: baseline;
+    }
+  }
+</style>

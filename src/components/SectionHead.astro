@@ -1,0 +1,69 @@
+---
+/** `01 / Research` on the left, a count or note on the right, hairline above. */
+interface Props {
+  index?: string;
+  title?: string;
+  meta?: string;
+  id?: string;
+  /** Sits on a dark or coloured field rather than cream. */
+  tone?: 'default' | 'inverse' | 'field';
+}
+
+const { index, title, meta, id, tone = 'default' } = Astro.props;
+---
+
+<div class:list={['head', `head--${tone}`]} id={id}>
+  <p class="label head__label">
+    {index && <span class="head__index">{index}</span>}
+    {title && <span>{title}</span>}
+  </p>
+  {meta && <p class="label head__meta nums">{meta}</p>}
+</div>
+
+<style>
+  .head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--s-3);
+    padding-top: 0.85rem;
+    border-top: 1px solid var(--rule);
+  }
+
+  .head--inverse {
+    border-top-color: var(--on-dark-rule);
+  }
+
+  .head--field {
+    border-top-color: rgba(31, 29, 25, 0.28);
+  }
+
+  .head__label {
+    display: flex;
+    align-items: baseline;
+    gap: 0.9em;
+  }
+
+  .head__index {
+    color: var(--persimmon-ink);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .head--inverse .head__index {
+    color: var(--gold);
+  }
+
+  .head--field .head__index {
+    color: var(--ink);
+    opacity: 0.55;
+  }
+
+  .head__meta {
+    color: var(--ink-45);
+    text-align: right;
+  }
+
+  .head--inverse .head__meta {
+    color: var(--on-dark-60);
+  }
+</style>

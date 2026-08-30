@@ -1,0 +1,129 @@
+---
+/**
+ * The site's identity: "NATHANAEL JO" with the O drawn as a ring holding a
+ * loose disc. The disc leans toward the pointer when it comes close, with a
+ * little inertia, and settles back to centre when it leaves. That is the whole
+ * trick, and it is the only place on the site where anything follows a pointer.
+ */
+import { site } from '../data/site';
+
+interface Props {
+  /** `hero` is the oversized homepage version; `footer` is a quieter reprise. */
+  variant?: 'hero' | 'footer';
+}
+
+const { variant = 'hero' } = Astro.props;
+const Tag = variant === 'hero' ? 'h1' : 'p';
+---
+
+<Tag class:list={['name', `name--${variant}`]} aria-label={site.name} data-name-mark>
+  <span class="name__word" aria-hidden="true">Nathanael</span>{' '}<span
+    class="name__word"
+    aria-hidden="true"
+    >J<span class="o"
+      ><svg class="o__svg" viewBox="0 0 100 100" focusable="false" aria-hidden="true">
+        <circle class="o__ring" cx="50" cy="50" r="44.5" />
+        <circle class="o__core" cx="50" cy="50" r="17.5" data-name-core />
+      </svg></span
+    ></span
+  >
+</Tag>
+
+<script>
+  import { subscribe, spring, step, motionAllowed, proximity } from '../scripts/motion';
+
+  if (motionAllowed()) {
+    // In viewBox units: the ring's inner radius is 37 and the disc's is 20, so
+    // nine units is a lean, not a lurch.
+    const MAX = 9;
+    const RADIUS = 560;
+
+    for (const mark of document.querySelectorAll<HTMLElement>('[data-name-mark]')) {
+      const core = mark.querySelector<SVGCircleElement>('[data-name-core]');
+      if (!core) continue;
+
+      const x = spring();
+      const y = spring();
+      let box = mark.getBoundingClientRect();
+      let frames = 0;
+
+      subscribe((pointer, dtScale) => {
+        // Re-measure occasionally rather than every frame.
+        if (frames++ % 30 === 0) box = mark.getBoundingClientRect();
+
+        if (pointer.seen) {
+          const near = proximity(box, pointer, RADIUS);
+          x.target = near.x * MAX;
+          y.target = near.y * MAX;
+        } else {
+          x.target = 0;
+          y.target = 0;
+        }
+
+        const movingX = step(x, dtScale);
+        const movingY = step(y, dtScale);
+        core.style.setProperty('--ox', `${x.value.toFixed(2)}px`);
+        core.style.setProperty('--oy', `${y.value.toFixed(2)}px`);
+        return movingX || movingY;
+      });
+    }
+  }
+</script>
+
+<style>
+  /* One line where it fits; it breaks between the two words where it doesn't. */
+  .name {
+    font-weight: 500;
+    text-transform: uppercase;
+    line-height: 0.88;
+    letter-spacing: -0.035em;
+    margin: 0;
+    text-wrap: wrap;
+  }
+
+  .name--hero {
+    font-size: var(--display);
+  }
+
+  .name--footer {
+    font-size: clamp(2.5rem, 6vw, 4.5rem);
+    letter-spacing: -0.03em;
+  }
+
+  .name__word {
+    display: inline-block;
+    white-space: nowrap;
+  }
+
+  /* An inline-block of cap-height sits exactly on the baseline, so the ring
+     lines up with the letters beside it without any nudging. */
+  .o {
+    display: inline-block;
+    width: 0.72em;
+    height: 0.72em;
+    margin-left: 0.035em;
+    vertical-align: baseline;
+  }
+
+  .o__svg {
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+  }
+
+  .o__ring {
+    fill: none;
+    stroke: currentColor;
+    /* Matched to the stem weight of the letters next to it. */
+    stroke-width: 10.5;
+  }
+
+  .o__core {
+    fill: var(--persimmon);
+    transform: translate(var(--ox, 0), var(--oy, 0));
+  }
+
+  .name--footer .o__core {
+    fill: var(--gold);
+  }
+</style>

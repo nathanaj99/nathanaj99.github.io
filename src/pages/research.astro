@@ -1,0 +1,286 @@
+---
+import { getCollection } from 'astro:content';
+
+import Base from '../layouts/Base.astro';
+import PublicationRow from '../components/PublicationRow.astro';
+import SectionHead from '../components/SectionHead.astro';
+import StrandRail from '../components/StrandRail.astro';
+import { site } from '../data/site';
+import { sortPublications } from '../lib/publications';
+
+const strands = (await getCollection('research')).sort((a, b) => a.data.order - b.data.order);
+const publications = sortPublications(await getCollection('publications'));
+
+const strandIds = new Set(strands.map((strand) => strand.id));
+const papersIn = (id: string) => publications.filter((entry) => entry.data.themes.includes(id));
+
+// Anything not filed under a strand still gets listed, so a paper can never
+// disappear just because its `themes` field is empty or misspelled.
+const unfiled = publications.filter(
+  (entry) => !entry.data.themes.some((theme) => strandIds.has(theme)),
+);
+
+const scholar = site.links.find((link) => link.label === 'Google Scholar');
+---
+
+<Base
+  title="Research"
+  description="Papers by Nathanael Jo across three strands: human–AI interaction, evaluations of AI systems, and machine learning for decision making and policy."
+>
+  <StrandRail />
+
+  <header class="page frame">
+    <SectionHead title="Overview" />
+
+    <div class="page__intro">
+      <div class="page__grid grid">
+        <h1 class="page__title">Research</h1>
+        <p class="page__statement">{site.researchStatement}</p>
+        {
+          scholar && (
+            <p class="page__note">
+              You can view the most up-to-date and chronological list of my research on{' '}
+              <a class="link" href={scholar.href} target="_blank" rel="noopener">
+                Google Scholar
+              </a>
+              .
+            </p>
+          )
+        }
+      </div>
+    </div>
+  </header>
+
+  {
+    strands.map((strand) => {
+      const papers = papersIn(strand.id);
+      return (
+        <section class="area frame" id={strand.id} aria-labelledby={`${strand.id}-title`}>
+          <SectionHead
+            index={String(strand.data.order).padStart(2, '0')}
+            title={strand.data.label.join(' ')}
+          />
+
+          <div class="area__top">
+            <div class="area__mark" aria-hidden="true">
+              <span class:list={['area__disc', `area__disc--${strand.data.accent}`]} />
+            </div>
+
+            <div class="area__head">
+              <h2 class="area__title" id={`${strand.id}-title`}>
+                {strand.data.title}
+              </h2>
+              <p class="area__question">{strand.data.question}</p>
+            </div>
+          </div>
+
+          <ul class="area__papers">
+            {papers.map((entry) => (
+              <PublicationRow entry={entry} compact />
+            ))}
+          </ul>
+        </section>
+      );
+    })
+  }
+
+  {
+    unfiled.length > 0 && (
+      <section class="area frame" id="other" aria-labelledby="other-title">
+        <SectionHead title="Other work" />
+        <div class="area__top area__top--plain">
+          <div class="area__head">
+            <h2 class="area__title" id="other-title">
+              Other work
+            </h2>
+          </div>
+        </div>
+        <ul class="area__papers">
+          {unfiled.map((entry) => (
+            <PublicationRow entry={entry} compact />
+          ))}
+        </ul>
+      </section>
+    )
+  }
+</Base>
+
+<style>
+  .page {
+    padding-top: clamp(1.75rem, 3.5vw, 3rem);
+    padding-bottom: 0;
+  }
+
+  .page__intro {
+    margin-top: clamp(1.15rem, 2.2vw, 1.75rem);
+  }
+
+  .page__grid {
+    align-items: start;
+    row-gap: 0.95rem;
+  }
+
+  .page__title {
+    grid-column: 1 / span 4;
+    grid-row: 1;
+    font-size: var(--step-3);
+    font-weight: 500;
+    letter-spacing: -0.03em;
+  }
+
+  .page__statement {
+    grid-column: 5 / span 8;
+    grid-row: 1;
+    padding-top: 0.2rem;
+    font-size: var(--step-1);
+    line-height: 1.28;
+    letter-spacing: -0.015em;
+    max-width: 52ch;
+  }
+
+  .page__note {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    margin-top: 0;
+    font-size: var(--step--1);
+    line-height: 1.4;
+    color: var(--ink-45);
+    max-width: none;
+    white-space: nowrap;
+  }
+
+  .area {
+    padding-top: clamp(1rem, 2vw, 1.5rem);
+  }
+
+  .area__top {
+    --semi: clamp(3.25rem, 7vw, 4.75rem);
+    position: relative;
+    display: flex;
+    align-items: center;
+    margin-top: clamp(0.75rem, 1.5vw, 1.1rem);
+    /* Half the disc sits in the left gutter; text clears the visible half. */
+    padding-left: calc(var(--semi) * 0.5 + 1rem);
+    min-height: var(--semi);
+  }
+
+  .area__top--plain {
+    padding-left: 0;
+    min-height: 0;
+  }
+
+  /* Right half of a disc: centre sits on the left edge so hover scale grows
+     in place. overflow is visible so the arc + outline are never cropped. */
+  .area__mark {
+    position: absolute;
+    left: 0;
+    top: 50%;
+    width: calc(var(--semi) / 2);
+    height: var(--semi);
+    transform: translateY(-50%);
+    transform-origin: left center;
+    overflow: visible;
+    z-index: 0;
+    cursor: default;
+    transition: transform 420ms cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+
+  .area__disc,
+  .area__disc::after {
+    position: absolute;
+    top: 0;
+    left: calc(var(--semi) / -2);
+    width: var(--semi);
+    height: var(--semi);
+    border-radius: 50%;
+    clip-path: inset(0 0 0 50%);
+  }
+
+  .area__disc::after {
+    content: '';
+    pointer-events: none;
+    background: none;
+    box-shadow: 0 0 0 1.5px color-mix(in srgb, var(--ink) 55%, transparent);
+    opacity: 0;
+    transition: opacity 320ms ease;
+  }
+
+  .area__disc--persimmon {
+    background: var(--persimmon);
+  }
+  .area__disc--gold {
+    background: var(--gold);
+  }
+  .area__disc--cobalt {
+    background: var(--cobalt);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .area__mark:hover {
+      transform: translateY(-50%) scale(1.1);
+    }
+
+    .area__mark:hover .area__disc::after {
+      opacity: 1;
+    }
+  }
+
+  .area__head {
+    position: relative;
+    z-index: 1;
+    max-width: 42rem;
+  }
+
+  .area__title {
+    font-size: var(--step-2);
+    font-weight: 500;
+    letter-spacing: -0.022em;
+    max-width: 28ch;
+  }
+
+  .area__question {
+    margin-top: 0.45rem;
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: var(--step-1);
+    line-height: 1.28;
+    color: var(--ink-80);
+    max-width: 42ch;
+  }
+
+  .area__papers {
+    margin-top: clamp(1rem, 2vw, 1.5rem);
+    border-top: 1px solid var(--rule);
+  }
+
+  @media (max-width: 60rem) {
+    .page__title,
+    .page__statement,
+    .page__note {
+      grid-column: 1 / -1;
+      grid-row: auto;
+    }
+
+    .page__statement {
+      padding-top: 0;
+    }
+
+    .page__note {
+      white-space: normal;
+    }
+  }
+
+  @media (max-width: 46rem) {
+    .area__top {
+      --semi: 2.85rem;
+      padding-left: calc(var(--semi) * 0.5 + 0.85rem);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .area__mark,
+    .area__disc::after {
+      transition: none;
+    }
+  }
+</style>

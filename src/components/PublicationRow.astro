@@ -1,0 +1,340 @@
+---
+/**
+ * One bibliography entry. Everything a reader needs — title, authors, venue,
+ * links — is on the page as text; the figure in the margin is a bonus that
+ * appears on hover on wide screens and is hidden from assistive tech.
+ */
+import type { Publication } from '../lib/publications';
+import { authorParts, paperLinks, primaryHref, TYPE_LABEL } from '../lib/publications';
+import { site } from '../data/site';
+import { url } from '../lib/url';
+
+interface Props {
+  entry: Publication;
+  /** Tighter version used on the research page: no figure, no press line. */
+  compact?: boolean;
+  /** Off when rows already sit under a year heading. */
+  showYear?: boolean;
+}
+
+const { entry, compact = false, showYear = true } = Astro.props;
+const data = entry.data;
+const authors = authorParts(data.authors, site.name);
+const links = paperLinks(data);
+const href = primaryHref(data);
+const typeLabel = data.status ?? TYPE_LABEL[data.type];
+const accentByType = {
+  'working-paper': 'gold',
+  conference: 'persimmon',
+  journal: 'cobalt',
+} as const;
+---
+
+<li class:list={['pub', { 'pub--compact': compact }]} id={data.id}>
+  <div class="pub__rail">
+    <p class="label pub__type">
+      <span class:list={['disc', `disc--${accentByType[data.type]}`]} aria-hidden="true"></span>
+      {typeLabel}
+    </p>
+  </div>
+
+  <div class="pub__body">
+    <h3 class="pub__title">
+      {
+        href ? (
+          <a class="pub__titleLink" href={href} target="_blank" rel="noopener">
+            {data.title}
+          </a>
+        ) : (
+          data.title
+        )
+      }
+    </h3>
+
+    <p class="pub__authors">
+      {
+        authors.map((author, i) => (
+          <>
+            {i > 0 && <span class="pub__sep">, </span>}
+            <span class:list={{ 'pub__self': author.isSelf }}>{author.name}</span>
+          </>
+        ))
+      }
+    </p>
+
+    {
+      (data.venue || data.status) && (
+        <p class="pub__venue">
+          <span class="serif pub__venueName">{data.venue ?? data.status}</span>
+          {showYear && <span class="pub__year nums">{data.year}</span>}
+        </p>
+      )
+    }
+
+    {
+      links.length > 0 && (
+        <ul class="pub__links">
+          {links.map((link) => (
+            <li>
+              <a class="label link-quiet" href={link.href} target="_blank" rel="noopener">
+                {link.label}
+              </a>
+            </li>
+          ))}
+        </ul>
+      )
+    }
+
+    {
+      !compact && data.press.length > 0 && (
+        <p class="label pub__press">
+          <span class="pub__pressLabel">Press</span>
+          {data.press.map((item, i) => (
+            <>
+              {i > 0 && <span aria-hidden="true"> / </span>}
+              <a class="link-quiet" href={item.url} target="_blank" rel="noopener">
+                {item.name}
+              </a>
+            </>
+          ))}
+        </p>
+      )
+    }
+  </div>
+
+  {
+    !compact && data.figure && (
+      <figure class="pub__figure" aria-hidden="true">
+        <img src={url(`/figures/${data.figure}`)} alt="" loading="lazy" decoding="async" />
+      </figure>
+    )
+  }
+</li>
+
+<style>
+  .pub {
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    column-gap: var(--gutter);
+    padding-block: clamp(1.6rem, 2.6vw, 2.4rem);
+    border-top: 1px solid var(--rule);
+  }
+
+  .pub--compact {
+    padding-block: 0.7rem;
+  }
+
+  .pub:first-child {
+    border-top: none;
+  }
+
+  .pub--compact:first-child {
+    padding-top: 0.85rem;
+  }
+
+  .pub__rail {
+    grid-column: 1 / span 2;
+  }
+
+  .pub__type {
+    display: flex;
+    align-items: baseline;
+    gap: 0.6em;
+    color: var(--ink-60);
+  }
+
+  .pub--compact .pub__type {
+    font-size: 0.625rem;
+    letter-spacing: 0.14em;
+  }
+
+  .pub__type .disc {
+    width: 0.5em;
+    height: 0.5em;
+    transform: translateY(-0.05em);
+  }
+
+  .pub__body {
+    grid-column: 3 / span 7;
+  }
+
+  .pub--compact .pub__body {
+    grid-column: 3 / span 9;
+  }
+
+  .pub__title {
+    font-size: var(--step-2);
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    line-height: 1.12;
+    max-width: 34ch;
+  }
+
+  .pub--compact .pub__title {
+    font-size: var(--step-1);
+    line-height: 1.22;
+    letter-spacing: -0.014em;
+    max-width: 58ch;
+  }
+
+  .pub__titleLink {
+    text-decoration: none;
+    transition: color 200ms ease;
+  }
+
+  .pub__titleLink::after {
+    /* The whole row is the target, so the pointer never has to be precise. */
+    content: '';
+    position: absolute;
+    inset: 0;
+  }
+
+  .pub:hover .pub__titleLink,
+  .pub:focus-within .pub__titleLink {
+    color: var(--persimmon-ink);
+  }
+
+  .pub__authors {
+    margin-top: 0.7rem;
+    font-size: var(--step--1);
+    color: var(--ink-60);
+    max-width: 52ch;
+  }
+
+  .pub--compact .pub__authors {
+    margin-top: 0.2rem;
+    font-size: 0.8125rem;
+    line-height: 1.35;
+  }
+
+  .pub__self {
+    color: var(--ink);
+    font-weight: 600;
+  }
+
+  .pub__venue {
+    margin-top: 0.35rem;
+    display: flex;
+    align-items: baseline;
+    gap: 0.7em;
+    font-size: var(--step--1);
+  }
+
+  .pub--compact .pub__venue {
+    margin-top: 0.1rem;
+    gap: 0.55em;
+    font-size: 0.8125rem;
+  }
+
+  .pub__venueName {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: 1.12em;
+    color: var(--ink);
+  }
+
+  .pub--compact .pub__venueName {
+    font-size: 1.05em;
+  }
+
+  .pub__year {
+    color: var(--ink-45);
+  }
+
+  .pub__links {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.15rem;
+    margin-top: 1.05rem;
+  }
+
+  .pub--compact .pub__links {
+    gap: 0.85rem;
+    margin-top: 0.35rem;
+  }
+
+  .pub__press {
+    position: relative;
+    z-index: 1;
+    margin-top: 0.9rem;
+    color: var(--ink-45);
+  }
+
+  .pub__pressLabel {
+    margin-right: 0.75em;
+    color: var(--ink-45);
+  }
+
+  /* The figure lives in the empty right-hand columns and only shows up when
+     the row is hovered or focused. Wide screens only. */
+  .pub__figure {
+    display: none;
+    grid-column: 10 / span 3;
+    margin: 0;
+  }
+
+  @media (min-width: 74rem) and (hover: hover) and (pointer: fine) {
+    .pub__figure {
+      display: block;
+      justify-self: end;
+      width: min(11rem, 100%);
+      opacity: 0;
+      transform: scale(0.96);
+      transition:
+        opacity 300ms ease,
+        transform 460ms cubic-bezier(0.2, 0.7, 0.2, 1);
+      pointer-events: none;
+    }
+
+    .pub__figure img {
+      width: 100%;
+      height: auto;
+      background: var(--cream-deep);
+      border: 1px solid var(--rule);
+      padding: 0.9rem;
+    }
+
+    .pub:hover .pub__figure,
+    .pub:focus-within .pub__figure {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  @media (max-width: 60rem) {
+    .pub {
+      grid-template-columns: 1fr;
+      row-gap: 0.85rem;
+    }
+
+    /* Compact: keep a reserved type column so titles share one left edge
+       even when “Conference paper” wraps and “Journal article” does not. */
+    .pub--compact {
+      grid-template-columns: 5.5rem minmax(0, 1fr);
+      column-gap: 0.75rem;
+      row-gap: 0;
+      align-items: start;
+    }
+
+    .pub__rail,
+    .pub__body {
+      grid-column: 1 / -1;
+    }
+
+    .pub--compact .pub__rail {
+      grid-column: 1;
+    }
+
+    .pub--compact .pub__body {
+      grid-column: 2;
+    }
+
+    .pub--compact .pub__type {
+      letter-spacing: 0.08em;
+      line-height: 1.25;
+    }
+  }
+</style>

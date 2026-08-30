@@ -1,0 +1,84 @@
+---
+import Base from '../layouts/Base.astro';
+import SectionHead from '../components/SectionHead.astro';
+import { site } from '../data/site';
+import { url } from '../lib/url';
+---
+
+<Base title="Page not found" description="That page does not exist.">
+  <section class="lost frame">
+    <SectionHead title="Not found" meta="404" />
+
+    <p class="lost__figure" aria-hidden="true">
+      4<span class="lost__disc"></span>4
+    </p>
+
+    <h1 class="lost__title">This page doesn't exist.</h1>
+    <p class="lost__text">
+      It may have moved when the site was rebuilt. Everything is one link away:
+    </p>
+
+    <ul class="lost__links">
+      <li><a class="label link-quiet" href={url('/')}>Home</a></li>
+      {
+        site.nav.map((item) => (
+          <li>
+            <a
+              class="label link-quiet"
+              href={url(item.href)}
+              target={item.external ? '_blank' : undefined}
+              rel={item.external ? 'noopener' : undefined}
+            >
+              {item.label}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+</Base>
+
+<style>
+  .lost {
+    padding-top: clamp(2.5rem, 5vw, 4.5rem);
+    padding-bottom: clamp(4rem, 10vw, 9rem);
+  }
+
+  .lost__figure {
+    display: flex;
+    align-items: center;
+    gap: 0.06em;
+    margin-top: clamp(2rem, 4vw, 3.5rem);
+    font-size: clamp(4.5rem, 16vw, 11rem);
+    font-weight: 500;
+    letter-spacing: -0.04em;
+    line-height: 0.9;
+  }
+
+  .lost__disc {
+    width: 0.66em;
+    height: 0.66em;
+    border-radius: 50%;
+    background: var(--persimmon);
+  }
+
+  .lost__title {
+    margin-top: clamp(1.5rem, 3vw, 2.5rem);
+    font-size: var(--step-3);
+    font-weight: 500;
+    letter-spacing: -0.028em;
+  }
+
+  .lost__text {
+    margin-top: 1rem;
+    max-width: 42ch;
+    color: var(--ink-80);
+  }
+
+  .lost__links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem 1.75rem;
+    margin-top: clamp(1.75rem, 3vw, 2.5rem);
+  }
+</style>

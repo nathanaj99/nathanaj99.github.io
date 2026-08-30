@@ -1,6 +1,19 @@
-_site
-.sass-cache
-.jekyll-cache
-.jekyll-metadata
-vendor
+# build output
+dist/
+.astro/
+
+# dependencies
+node_modules/
+
+# generated types
+env.d.ts
+
+# macOS
 .DS_Store
+
+# logs
+*.log
+npm-debug.log*
+
+# local scratch
+.staging/

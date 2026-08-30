@@ -1,0 +1,232 @@
+---
+import { Image } from 'astro:assets';
+import { getEntry, render } from 'astro:content';
+
+import Base from '../layouts/Base.astro';
+import SectionHead from '../components/SectionHead.astro';
+import portrait from '../assets/portrait.png';
+import { site } from '../data/site';
+import { url } from '../lib/url';
+
+const about = await getEntry('prose', 'about');
+if (!about) throw new Error('src/content/prose/about.md is missing.');
+const { Content } = await render(about);
+---
+
+<Base title="Bio" description={about.data.description}>
+  <header class="page frame">
+    <SectionHead title="Bio" meta={site.affiliation} />
+
+    <div class="page__grid grid">
+      <h1 class="page__title">{site.name}</h1>
+      <p class="page__role">PhD Student @ MIT</p>
+    </div>
+  </header>
+
+  <div class="frame">
+    <div class="body grid">
+      <div class="body__aside">
+        <figure class="portrait">
+          <span class="portrait__field" aria-hidden="true"></span>
+          <span class="portrait__ring" aria-hidden="true"></span>
+          <span class="portrait__dot" aria-hidden="true"></span>
+          <Image
+            src={portrait}
+            widths={[380, 560, 760]}
+            sizes="(max-width: 60rem) 55vw, 26vw"
+            alt="Nathanael Jo"
+          />
+        </figure>
+
+        <div class="contact">
+          <p class="label contact__head">Contact</p>
+          <p class="contact__note">{site.contactNote}</p>
+          <a class="contact__email" href={`mailto:${site.email}`}>{site.email}</a>
+
+          <ul class="contact__links">
+            {
+              site.links
+                .filter((link) =>
+                  ['Google Scholar', 'GitHub', 'LinkedIn'].includes(link.label),
+                )
+                .map((link) => (
+                  <li>
+                    <a
+                      class="label link-quiet"
+                      href={link.href.startsWith('/') ? url(link.href) : link.href}
+                      target={link.external ? '_blank' : undefined}
+                      rel={link.external ? 'noopener' : undefined}
+                    >
+                      {link.label}
+                    </a>
+                  </li>
+                ))
+            }
+          </ul>
+        </div>
+      </div>
+
+      <div class="body__main">
+        <div class="prose bio">
+          <Content />
+        </div>
+      </div>
+    </div>
+  </div>
+</Base>
+
+<style>
+  .page {
+    padding-top: clamp(2.5rem, 5vw, 4.5rem);
+    padding-bottom: clamp(2rem, 4vw, 3.5rem);
+  }
+
+  .page__grid {
+    margin-top: clamp(1.5rem, 3vw, 2.5rem);
+    align-items: baseline;
+  }
+
+  .page__title {
+    grid-column: 1 / span 6;
+    font-size: var(--step-4);
+    font-weight: 500;
+    letter-spacing: -0.035em;
+  }
+
+  .page__role {
+    grid-column: 7 / span 6;
+    justify-self: end;
+    text-align: right;
+    white-space: nowrap;
+    font-size: var(--step-1);
+    letter-spacing: -0.01em;
+    color: var(--ink-80);
+  }
+
+  @media (max-width: 40rem) {
+    .page__title,
+    .page__role {
+      grid-column: 1 / -1;
+      justify-self: start;
+      text-align: left;
+    }
+
+    .page__role {
+      margin-top: 0.25rem;
+    }
+  }
+
+  .body {
+    row-gap: var(--s-5);
+    padding-bottom: clamp(2rem, 4vw, 4rem);
+  }
+
+  .body__aside {
+    grid-column: 1 / span 4;
+    position: sticky;
+    top: calc(var(--header-h) + 2.5rem);
+  }
+
+  /* Placement only; gold field, optical shift, and hover live in global.css. */
+  .portrait {
+    margin-left: 50;
+    width: min(100%, 16rem);
+  }
+
+  .portrait :global(picture),
+  .portrait :global(img) {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: 50%;
+  }
+
+  .contact {
+    margin-top: clamp(2.25rem, 4vw, 3rem);
+    padding-top: 1rem;
+    border-top: 1px solid var(--rule);
+  }
+
+  .contact__head {
+    color: var(--ink-45);
+  }
+
+  .contact__note {
+    margin-top: 0.75rem;
+    font-size: var(--step--1);
+    color: var(--ink-80);
+    max-width: 24ch;
+  }
+
+  .contact__email {
+    display: inline-block;
+    margin-top: 0.5rem;
+    text-decoration: none;
+    border-bottom: 1px solid var(--rule-strong);
+    padding-bottom: 0.1em;
+    transition:
+      color 200ms ease,
+      border-color 200ms ease;
+  }
+
+  .contact__email:hover {
+    color: var(--persimmon-ink);
+    border-bottom-color: var(--persimmon);
+  }
+
+  .contact__links {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 0.45rem 0.85rem;
+    margin-top: 1.5rem;
+  }
+
+  .contact__links .label {
+    font-size: 0.5625rem;
+    letter-spacing: 0.1em;
+  }
+
+  .body__main {
+    grid-column: 6 / span 7;
+  }
+
+  .bio {
+    font-size: clamp(1rem, 0.97rem + 0.12vw, 1.0625rem);
+    line-height: 1.5;
+    max-width: 58ch;
+  }
+
+  .bio :global(p:first-child) {
+    font-size: 1em;
+  }
+
+  @media (max-width: 66rem) {
+    .body__aside {
+      grid-column: 1 / span 5;
+    }
+
+    .body__main {
+      grid-column: 7 / span 6;
+    }
+  }
+
+  /* Stack portrait above contact before the gold offset collides with it. */
+  @media (max-width: 52rem) {
+    .body__aside {
+      position: static;
+      grid-column: 1 / -1;
+    }
+
+    .portrait {
+      width: min(100%, 11.5rem);
+    }
+
+    .contact {
+      margin-top: 1.75rem;
+    }
+
+    .body__main {
+      grid-column: 1 / -1;
+    }
+  }
+</style>

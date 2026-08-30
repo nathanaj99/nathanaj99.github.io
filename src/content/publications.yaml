@@ -1,0 +1,189 @@
+# ---------------------------------------------------------------------------
+# Publications. Migrated from _bibliography/papers.bib (al-folio + jekyll-scholar).
+#
+# One entry per paper. Ordering on the site is computed, not manual:
+#   year (desc) → type (working papers, then conference, then journal) → month (desc)
+#
+# Fields:
+#   id          unique slug, used for anchors and theme links
+#   type        working-paper | conference | journal
+#   venue       full venue name; venueShort is used in narrow columns
+#   status      free text, e.g. "Working paper", "Forthcoming"
+#   links       arxiv (id only) / pdf / html / code — omit what does not exist
+#   figure      file in public/figures, revealed on hover on /research
+#   selected    true → can appear as representative work on the homepage; the
+#               two newest selected papers of each strand are shown there
+#   themes      one id from research.yaml — the strand this paper belongs to
+# ---------------------------------------------------------------------------
+
+- id: incentives-co-creation
+  title: Incentives shape how humans co-create with generative AI
+  authors: [Nathanael Jo, Manish Raghavan]
+  year: 2026
+  type: working-paper
+  status: Working paper
+  links:
+    arxiv: "2604.03529"
+  selected: true
+  themes: [human-ai]
+
+- id: alignment-fantasia
+  title: Alignment has a Fantasia Problem
+  authors: [Nathanael Jo, Zoe De Simone, Mitchell Gordon, Ashia Wilson]
+  year: 2026
+  type: working-paper
+  status: Working paper
+  links:
+    arxiv: "2604.21827"
+  selected: true
+  themes: [human-ai]
+
+- id: subjectivity-monoculture
+  title: The Subjectivity of Monoculture
+  authors: [Nathanael Jo, Nikhil Garg, Manish Raghavan]
+  year: 2026
+  type: working-paper
+  status: Working paper
+  links:
+    arxiv: "2509.19590"
+  selected: true
+  themes: [evaluation]
+
+- id: theory-of-capability
+  title: "Position: AI Evaluations Should be Grounded on a Theory of Capability"
+  authors: [Nathanael Jo, Ashia C. Wilson]
+  year: 2026
+  month: 7
+  type: conference
+  venue: International Conference on Machine Learning, Position Paper Track
+  venueShort: ICML (Position)
+  links:
+    html: https://openreview.net/forum?id=9n4xlpq3w3
+    # papers.bib also listed arxiv={2509.19590} for this entry, but that is the
+    # arXiv id of "The Subjectivity of Monoculture" above. Left out until confirmed.
+  selected: true
+  themes: [evaluation]
+
+- id: predeadline-reminders
+  title: "Drop a Line, Submit on Time? Randomized Tailored Reminders Improve Pollution Reporting Timeliness"
+  authors: [Elinor Benami, Nathanael Jo, Beth Ragnauth, Daniel E. Ho]
+  year: 2026
+  month: 7
+  type: journal
+  venue: Journal of the Association of Environmental and Resource Economists
+  venueShort: JAERE
+  links:
+    html: https://papers.ssrn.com/sol3/papers.cfm?abstract_id=4355984
+    code: https://github.com/nathanaj99/predeadline-reminder
+  figure: predeadline_reminder.svg
+  figureAlt: Diagram of an envelope in front of a burst shape.
+  themes: [decision-making]
+
+- id: prescriptive-trees
+  title: Learning Optimal Prescriptive Trees from Observational Data
+  authors: [Nathanael Jo, Sina Aghaei, Andrés Gómez, Phebe Vayanos]
+  year: 2026
+  month: 6
+  type: journal
+  venue: Management Science
+  venueShort: Management Science
+  links:
+    arxiv: "2108.13628"
+    code: https://github.com/nathanaj99/prescriptive-trees
+  figure: prescriptive_tree.svg
+  figureAlt: Decision tree diagram whose leaves are outlined circles marking prescribed treatments.
+  selected: true
+  themes: [decision-making]
+
+- id: homogeneous-pricing
+  title: Homogeneous algorithms can reduce competition in personalized pricing
+  authors: [Nathanael Jo, Kathleen Creel, Ashia Wilson, Manish Raghavan]
+  year: 2025
+  month: 12
+  type: conference
+  venue: Advances in Neural Information Processing Systems
+  venueShort: NeurIPS
+  links:
+    arxiv: "2503.15634"
+    html: https://proceedings.neurips.cc/paper_files/paper/2025/hash/91625e1de0ab1c8f2c0bb2c7742d5321-Abstract-Conference.html
+  selected: true
+  themes: [human-ai]
+
+- id: odtlearn
+  title: "ODTlearn: A Package for Learning Optimal Decision Trees for Prediction and Prescription"
+  authors: [Patrick Vossler, Sina Aghaei, Nathan Justin, Nathanael Jo, Andrés Gómez, Phebe Vayanos]
+  year: 2025
+  type: working-paper
+  status: Working paper
+  links:
+    arxiv: "2307.15691"
+    html: https://optimization-online.org/2023/07/odtlearn-a-package-for-learning-optimal-decision-trees-for-prediction-and-prescription/
+  figure: odtlearn.svg
+  figureAlt: The ODTlearn wordmark.
+  themes: [decision-making]
+
+- id: informal-adus
+  title: "Not (Officially) in My Backyard: Characterizing Informal Accessory Dwelling Units and Informing Housing Policy with Remote Sensing"
+  authors: [Nathanael Jo, Andrea Vallebueno, Derek Ouyang, Daniel E. Ho]
+  year: 2024
+  month: 6
+  type: journal
+  venue: Journal of the American Planning Association
+  venueShort: JAPA
+  links:
+    html: https://www.tandfonline.com/doi/full/10.1080/01944363.2024.2345730
+  press:
+    - name: CBS News
+      url: https://www.cbsnews.com/sanfrancisco/news/unpermitted-adus-growing-issue-bay-area-contractors-researchers-say/
+    - name: Local Housing Solutions
+      url: https://localhousingsolutions.org/housing-solutions-lab/our-research-and-partnerships/lab-grant-awardees/california-legalized-adus-but-unpermitted-ones-are-still-far-more-common-new-research-finds/
+  figure: adu.svg
+  figureAlt: Diagram of a house beside a smaller accessory dwelling unit.
+  selected: true
+  themes: [decision-making]
+
+- id: probabilistic-fairness
+  title: Estimating and Implementing Conventional Fairness Metrics With Probabilistic Protected Features
+  authors: [Hadi Elzayn, Emily Black, Patrick Vossler, Nathanael Jo, Jacob Goldin, Daniel E. Ho]
+  year: 2024
+  month: 4
+  type: conference
+  venue: IEEE Conference on Secure and Trustworthy Machine Learning
+  venueShort: SaTML
+  links:
+    arxiv: "2310.01679"
+    html: https://www.computer.org/csdl/proceedings-article/satml/2024/495000a161/1WPEDKjA8Ao
+    code: https://github.com/nathanaj99/probabilistic-fairness
+  figure: prob_fair.svg
+  figureAlt: Bar chart of a dataset in which protected features are only partially observed.
+  themes: [decision-making]
+
+- id: fair-classification-trees
+  title: "Learning Optimal Fair Classification Trees: Trade-offs Between Interpretability, Fairness, and Accuracy"
+  authors: [Nathanael Jo, Sina Aghaei, Andrés Gómez, Phebe Vayanos]
+  year: 2023
+  month: 8
+  type: conference
+  venue: AAAI/ACM Conference on AI, Ethics, and Society
+  venueShort: AIES
+  links:
+    arxiv: "2201.09932"
+    pdf: https://arxiv.org/pdf/2201.09932.pdf
+    code: https://github.com/nathanaj99/StrongFairTrees
+  figure: fairtrees.svg
+  figureAlt: Decision tree diagram with circular nodes and colored leaves.
+  themes: [decision-making]
+
+- id: fair-resource-allocation
+  title: "Fairness in Contextual Resource Allocation Systems: Metrics and Incompatibility Results"
+  authors: [Nathanael Jo, Bill Tang, Kathryn Dullerud, Sina Aghaei, Eric Rice, Phebe Vayanos]
+  year: 2023
+  type: conference
+  venue: AAAI Conference on Artificial Intelligence
+  venueShort: AAAI
+  links:
+    html: https://ojs.aaai.org/index.php/AAAI/article/view/26397
+    pdf: https://arxiv.org/pdf/2212.01725.pdf
+  figure: fair_alloc.svg
+  figureAlt: Three figures standing beside resource bars of decreasing height.
+  themes: [decision-making]

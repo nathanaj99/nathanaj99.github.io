@@ -1,0 +1,42 @@
+# ---------------------------------------------------------------------------
+# Research strands.
+#
+# These drive: the sticky strand rail on /research, the strand sections on the
+# homepage, and the detailed areas on /research. Papers attach themselves to a
+# strand through their own `themes:` field in publications.yaml — nothing is
+# listed twice, and every paper should belong to exactly one strand.
+#
+# `accent` picks a colour from the palette (persimmon | gold | cobalt) and is
+# also the colour of the circle that stands for the strand.
+# `label` is the short form on the rail: one array item per line.
+# `order` sets the sequence; the overview expects three strands.
+# ---------------------------------------------------------------------------
+
+- id: human-ai
+  order: 1
+  accent: persimmon
+  label: [Human–AI, Interaction]
+  title: Human–AI Interaction
+  question: How do people change what they do when an AI system is in the loop?
+  summary: >-
+    I study when people delegate their cognitive burden to generative AI, how that affects their agency, and how incentives shape that balance. But we also constantly interact with predictive algorithms too! I’m interested in similar questions around incentive design for algorithms at large.
+
+
+- id: evaluation
+  order: 2
+  accent: gold
+  label: [Evaluations of, AI Systems]
+  title: Evaluations of AI Systems
+  question: What are we actually measuring when we call a model capable, or aligned?
+  summary: >-
+    An AI system's value lies not only in its ability to produce a correct output, but also in how it shapes human thinking and decision-making. I study these questions from both a normative perspective (what should count as good performance?) and a statistical one (what can we actually infer from the evaluations we run?).
+
+- id: decision-making
+  order: 3
+  accent: cobalt
+  label: [ML for Decision, Making & Policy]
+  title: ML for Decision Making and Policy
+  question: What does it take to deploy algorithmic decisions responsibly in the real world?
+  summary: >-
+    I'm interested in developing decision making tools that align with stakeholder priorities—particularly for interpretability and fairness. I also use machine learning and large-scale data to generate policy insights.
+

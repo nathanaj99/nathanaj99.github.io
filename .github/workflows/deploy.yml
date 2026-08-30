@@ -29,11 +29,6 @@ jobs:
           node-version: 22
           cache: npm
 
-      # Node 22 ships npm 10, which rejects this lockfile (it expects hoisted
-      # @emnapi peer deps of optional wasm bindings). Local npm 11 does not.
-      - name: Use npm 11
-        run: npm install -g npm@11
-
       - name: Install dependencies
         run: npm ci
         env:
